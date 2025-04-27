@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="administrador.css">
+    <title>Administrador</title>
+</head>
+<body>
+    <h1>Administrador de eventos y clientes</h1>
+    <div id="contenido"></div>
+    <button onclick="cargarDatos()">Actualizar información</button>
+
+    <script>
+        function cargarDatos() {
+            axios.get('/obtener_clientes_eventos')
+                .then((response) => {
+                    const clientes = response.data.clientes;
+                    const eventos = response.data.eventos;
+
+                    let contenido = '';
+                    for (let i = 0; i < clientes.length; i++) {
+                        contenido += `<h2>Cliente ${clientes[i].nombre}</h2>`;
+                        contenido += `<p>Dirección: ${clientes[i].direccion}</p>`;
+                        contenido += `<p>Teléfono: ${clientes[i].telefono}</p>`;
+
+                        for (let j = 0; j < eventos.length; j++) {
+                            if (eventos[j].cliente_id === clientes[i].id) {
+                                contenido += `<h3>Evento ${eventos[j].fecha}: ${eventos[j].tipo}</h3>`;
+                                contenido += `<p>Detalle: ${eventos[j].detalle}</p>`;
+                            }
+                        }
+                    }
+
+                    document.getElementById('contenido').innerHTML = contenido;
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+    </script>
+</body>
+</html>
